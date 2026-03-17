@@ -8,7 +8,7 @@ export function Logo({ className = '', variant = 'default' }: LogoProps) {
 
   return (
     <svg 
-      viewBox="0 0 340 90" 
+      viewBox="0 0 400 90" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg"
       className={className}
@@ -60,12 +60,12 @@ export function Logo({ className = '', variant = 'default' }: LogoProps) {
       </g>
 
       {/* Texto INFINITYTECH - espaçamento ajustado */}
-      <g transform="translate(115, 24)">
+      <g transform="translate(115, 20)">
         <text 
           x="0" 
-          y="20" 
+          y="24" 
           fontFamily="Georgia, serif" 
-          fontSize="24" 
+          fontSize="28" 
           fontWeight="700" 
           fill={textColor}
           letterSpacing="1.5"
@@ -74,9 +74,9 @@ export function Logo({ className = '', variant = 'default' }: LogoProps) {
         </text>
         <text 
           x="1" 
-          y="42" 
+          y="48" 
           fontFamily="system-ui, sans-serif" 
-          fontSize="14" 
+          fontSize="16" 
           fontWeight="600" 
           fill={textColor}
           letterSpacing="5"

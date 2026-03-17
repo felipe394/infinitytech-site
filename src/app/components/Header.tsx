@@ -47,9 +47,11 @@ export function Header() {
   return (
     <header className="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0">
-            <Logo className="h-12 w-auto" />
+            <button onClick={() => scrollToSection('home')} className="cursor-pointer" aria-label="Ir para o início">
+              <Logo className="h-16 w-auto" />
+            </button>
           </div>
 
           {/* Desktop Menu */}

@@ -1,5 +1,4 @@
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { ExternalLink } from 'lucide-react';
 
 const projects = [
   {
@@ -13,6 +12,12 @@ const projects = [
     category: 'Desenvolvimento Web',
     image: 'https://images.unsplash.com/photo-1649698145660-d30f91023b52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2Z0d2FyZSUyMGRldmVsb3BtZW50JTIwY29kaW5nJTIwc2NyZWVufGVufDF8fHx8MTc3MzcxNTQxMHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     description: 'Sistema completo de vendas online com + 100k transações/mês'
+  },
+  {
+    title: 'Site para Casamento',
+    category: 'Sites para Casamentos',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixlib=rb-4.1.0&q=80&w=1080',
+    description: 'Sites personalizados para casamentos com lista de presentes, confirmação de presença e galeria de fotos'
   },
   {
     title: 'Sistema de Segurança',
@@ -70,11 +75,7 @@ export function Portfolio() {
               <div className="p-6">
                 <span className="text-sm text-blue-600 font-medium">{project.category}</span>
                 <h3 className="text-xl font-bold mt-2 mb-3">{project.title}</h3>
-                <p className="text-gray-600 mb-4">{project.description}</p>
-                <button className="text-blue-600 font-medium flex items-center gap-2 hover:gap-3 transition-all">
-                  Ver Detalhes
-                  <ExternalLink size={16} />
-                </button>
+                <p className="text-gray-600">{project.description}</p>
               </div>
             </div>
           ))}
