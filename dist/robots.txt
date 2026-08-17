@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://infinitytechservices.com.br/sitemap.xml
