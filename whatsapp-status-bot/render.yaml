@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: infinitytech-whatsapp-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: IMAGE_URL
+        value: https://infinitytechservices.com.br/og-imagem.jpeg
+      - key: CAPTION_TEXT
+        value: "InfinityTech Services | Soluções em T.I. e Desenvolvimento Web\n\n🔗 Acesse nosso site: https://infinitytechservices.com.br"
+      - key: CRON_SCHEDULE
+        value: "0 9 */2 * *"
