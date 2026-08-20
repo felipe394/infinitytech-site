@@ -9,7 +9,8 @@ import { fileURLToPath } from 'url';
 import makeWASocket, {
   useMultiFileAuthState,
   DisconnectReason,
-  fetchLatestBaileysVersion
+  fetchLatestBaileysVersion,
+  makeInMemoryStore
 } from '@whiskeysockets/baileys';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,9 @@ let lastPostedAt = null;
 let sock = null;
 
 const logger = pino({ level: 'info' });
+
+// Store em memória para manter a lista de contatos atualizada
+const store = makeInMemoryStore({ logger: pino({ level: 'silent' }) });
 
 async function startWhatsAppBot() {
   if (isConnecting) return;
@@ -48,6 +52,8 @@ async function startWhatsAppBot() {
     logger: pino({ level: 'silent' }),
     browser: ['InfinityTech Bot', 'Chrome', '1.0.0']
   });
+
+  store.bind(sock.ev);
 
   sock.ev.on('creds.update', saveCreds);
 
@@ -89,11 +95,28 @@ async function publishStatus() {
     const response = await axios.get(IMAGE_URL, { responseType: 'arraybuffer' });
     const imageBuffer = Buffer.from(response.data, 'binary');
 
-    logger.info('Publicando imagem no Status do WhatsApp (status@broadcast)...');
+    // Identificar contatos para enviar a permissão de visualização do Status
+    let statusJidList = [];
+    try {
+      const contacts = store.contacts ? Object.keys(store.contacts) : [];
+      statusJidList = contacts.filter(jid => jid.endsWith('@s.whatsapp.net'));
+    } catch (e) {
+      logger.warn('Aviso: Não foi possível obter contatos do store:', e);
+    }
+
+    const selfJid = sock.user?.id ? sock.user.id.split(':')[0] + '@s.whatsapp.net' : null;
+    if (selfJid && !statusJidList.includes(selfJid)) {
+      statusJidList.push(selfJid);
+    }
+
+    logger.info(`Publicando imagem no Status do WhatsApp (status@broadcast) para ${statusJidList.length} destinatário(s)...`);
+    
+    const sendOptions = statusJidList.length > 0 ? { statusJidList } : {};
+
     await sock.sendMessage('status@broadcast', {
       image: imageBuffer,
       caption: CAPTION_TEXT
-    });
+    }, sendOptions);
 
     lastPostedAt = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     logger.info(`Status publicado com sucesso em ${lastPostedAt}!`);
