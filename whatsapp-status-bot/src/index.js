@@ -9,8 +9,7 @@ import { fileURLToPath } from 'url';
 import makeWASocket, {
   useMultiFileAuthState,
   DisconnectReason,
-  fetchLatestBaileysVersion,
-  makeInMemoryStore
+  fetchLatestBaileysVersion
 } from '@whiskeysockets/baileys';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,8 +29,8 @@ let sock = null;
 
 const logger = pino({ level: 'info' });
 
-// Store em memória para manter a lista de contatos atualizada
-const store = makeInMemoryStore({ logger: pino({ level: 'silent' }) });
+// Armazenamento em memória leve para contatos e sessões
+const contacts = {};
 
 async function startWhatsAppBot() {
   if (isConnecting) return;
@@ -53,7 +52,11 @@ async function startWhatsAppBot() {
     browser: ['InfinityTech Bot', 'Chrome', '1.0.0']
   });
 
-  store.bind(sock.ev);
+  sock.ev.on('contacts.upsert', (newContacts) => {
+    for (const c of newContacts) {
+      if (c.id) contacts[c.id] = c;
+    }
+  });
 
   sock.ev.on('creds.update', saveCreds);
 
@@ -96,13 +99,7 @@ async function publishStatus() {
     const imageBuffer = Buffer.from(response.data, 'binary');
 
     // Identificar contatos para enviar a permissão de visualização do Status
-    let statusJidList = [];
-    try {
-      const contacts = store.contacts ? Object.keys(store.contacts) : [];
-      statusJidList = contacts.filter(jid => jid.endsWith('@s.whatsapp.net'));
-    } catch (e) {
-      logger.warn('Aviso: Não foi possível obter contatos do store:', e);
-    }
+    let statusJidList = Object.keys(contacts).filter(jid => jid.endsWith('@s.whatsapp.net'));
 
     const selfJid = sock.user?.id ? sock.user.id.split(':')[0] + '@s.whatsapp.net' : null;
     if (selfJid && !statusJidList.includes(selfJid)) {
