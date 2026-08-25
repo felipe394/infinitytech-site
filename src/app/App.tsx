@@ -1,23 +1,32 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { Services } from './components/Services';
-import { Portfolio } from './components/Portfolio';
-import { Testimonials } from './components/Testimonials';
-import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { WhatsAppButton } from './components/WhatsAppButton';
+import { HomePage } from './pages/HomePage';
+import { ServicesPage } from './pages/ServicesPage';
+import { PortfolioPage } from './pages/PortfolioPage';
+import { WhyUsPage } from './pages/WhyUsPage';
+import { ContactPage } from './pages/ContactPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        <Hero />
-        <Services />
-        <Portfolio />
-        <Testimonials />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div style={{ minHeight: '100vh', background: '#050a18', display: 'flex', flexDirection: 'column' }}>
+        <Header />
+        <div style={{ flex: 1 }}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/servicos" element={<ServicesPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/porquenos" element={<WhyUsPage />} />
+            <Route path="/contato" element={<ContactPage />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </div>
+        <Footer />
+        <WhatsAppButton />
+      </div>
+    </BrowserRouter>
   );
 }
