@@ -1,6 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { ExternalLink } from 'lucide-react';
+import { TiltCard } from './motion/TiltCard';
+import { GsapReveal } from './gsap/GsapReveal';
+import { MagneticButton } from './gsap/MagneticButton';
+import { AnimeCircuit } from './anime/AnimeCircuit';
 
 const projects = [
   {
@@ -47,146 +51,161 @@ const projects = [
   },
 ];
 
-function PortfolioCard({ project, index }: { project: typeof projects[0]; index: number }) {
+function PortfolioCard({ project }: { project: typeof projects[0] }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <TiltCard
+      glowColor={`${project.accent}50`}
+      maxTilt={8}
+      scaleHover={1.03}
       style={{
-        position: 'relative',
-        borderRadius: '20px',
-        overflow: 'hidden',
-        background: 'rgba(255,255,255,0.03)',
-        border: hovered ? `1px solid ${project.accent}40` : '1px solid rgba(255,255,255,0.08)',
-        boxShadow: hovered
-          ? `0 20px 60px rgba(0,0,0,0.5), 0 0 30px ${project.accent}20`
-          : '0 4px 20px rgba(0,0,0,0.3)',
-        transition: 'all 0.4s ease',
-        cursor: 'pointer',
-        animationDelay: `${index * 0.08}s`,
+        borderRadius: '24px',
+        height: '100%',
       }}
     >
-      {/* Image */}
       <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         style={{
-          aspectRatio: '16/10',
-          overflow: 'hidden',
           position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          background: 'rgba(255,255,255,0.03)',
+          backdropFilter: 'blur(16px)',
+          border: hovered ? `1px solid ${project.accent}80` : '1px solid rgba(255,255,255,0.08)',
+          boxShadow: hovered
+            ? `0 25px 70px rgba(0,0,0,0.6), 0 0 35px ${project.accent}30`
+            : '0 8px 25px rgba(0,0,0,0.3)',
+          transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        <ImageWithFallback
-          src={project.image}
-          alt={project.title}
+        {/* Image Frame */}
+        <div
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.6s ease',
-            transform: hovered ? 'scale(1.08)' : 'scale(1)',
+            aspectRatio: '16/10',
+            overflow: 'hidden',
+            position: 'relative',
           }}
-          className=""
-        />
-        {/* Color overlay on hover */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: hovered
-            ? `linear-gradient(to top, ${project.accent}90 0%, rgba(0,0,0,0.3) 60%, transparent 100%)`
-            : 'linear-gradient(to top, rgba(10,15,30,0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)',
-          transition: 'all 0.4s ease',
-        }} />
+        >
+          <ImageWithFallback
+            src={project.image}
+            alt={project.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.7s cubic-bezier(0.2, 0, 0, 1)',
+              transform: hovered ? 'scale(1.1)' : 'scale(1)',
+            }}
+          />
+          {/* Color overlay on hover */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: hovered
+                ? `linear-gradient(to top, ${project.accent}80 0%, rgba(5,10,24,0.6) 60%, transparent 100%)`
+                : 'linear-gradient(to top, rgba(5,10,24,0.9) 0%, rgba(5,10,24,0.3) 60%, transparent 100%)',
+              transition: 'all 0.4s ease',
+            }}
+          />
 
-        {/* Hover CTA */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: hovered ? 1 : 0,
-          transition: 'opacity 0.3s ease',
-        }}>
-          <div style={{
-            background: 'rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,0.3)',
-            borderRadius: '100px',
-            padding: '10px 22px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: 600,
-            fontFamily: 'Inter, sans-serif',
-            transform: hovered ? 'translateY(0)' : 'translateY(10px)',
-            transition: 'transform 0.3s ease',
-          }}>
-            <ExternalLink size={16} />
-            Ver Projeto
+          {/* Hover CTA with MagneticButton */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+            }}
+          >
+            <MagneticButton strength={0.3}>
+              <div
+                style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  borderRadius: '100px',
+                  padding: '12px 26px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  fontFamily: 'Inter, sans-serif',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+                }}
+              >
+                <ExternalLink size={16} />
+                Ver Projeto
+              </div>
+            </MagneticButton>
           </div>
         </div>
-      </div>
 
-      {/* Info */}
-      <div style={{ padding: '20px 24px' }}>
-        <span style={{
-          display: 'inline-block',
-          background: `${project.accent}18`,
-          border: `1px solid ${project.accent}40`,
-          borderRadius: '100px',
-          padding: '3px 12px',
-          fontSize: '12px',
-          fontWeight: 600,
-          color: project.accent,
-          letterSpacing: '0.05em',
-          fontFamily: 'Inter, sans-serif',
-          marginBottom: '10px',
-        }}>
-          {project.category}
-        </span>
-        <h3 style={{
-          fontSize: '17px',
-          fontWeight: 700,
-          fontFamily: 'Space Grotesk, sans-serif',
-          color: '#fff',
-          marginBottom: '8px',
-          lineHeight: 1.3,
-        }}>
-          {project.title}
-        </h3>
-        <p style={{
-          fontSize: '13px',
-          color: 'rgba(255,255,255,0.45)',
-          lineHeight: 1.6,
-          fontFamily: 'Inter, sans-serif',
-        }}>
-          {project.description}
-        </p>
+        {/* Info */}
+        <div style={{ padding: '24px 28px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                background: `${project.accent}18`,
+                border: `1px solid ${project.accent}50`,
+                borderRadius: '100px',
+                padding: '4px 14px',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: project.accent,
+                letterSpacing: '0.05em',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              {project.category}
+            </span>
+            <AnimeCircuit color={project.accent} width={50} height={16} />
+          </div>
+
+          <h3
+            style={{
+              fontSize: '18px',
+              fontWeight: 700,
+              fontFamily: 'Space Grotesk, sans-serif',
+              color: '#fff',
+              marginBottom: '8px',
+              lineHeight: 1.3,
+            }}
+          >
+            {project.title}
+          </h3>
+          <p
+            style={{
+              fontSize: '13.5px',
+              color: 'rgba(255,255,255,0.55)',
+              lineHeight: 1.6,
+              fontFamily: 'Inter, sans-serif',
+              marginTop: 'auto',
+            }}
+          >
+            {project.description}
+          </p>
+        </div>
       </div>
-    </div>
+    </TiltCard>
   );
 }
 
 export function Portfolio({ standalone }: { standalone?: boolean }) {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section
       id="portfolio"
-      ref={ref}
       style={{
         padding: standalone ? '60px 0 120px' : '120px 0',
         background: 'linear-gradient(180deg, #080c1f 0%, #050a18 100%)',
@@ -195,89 +214,95 @@ export function Portfolio({ standalone }: { standalone?: boolean }) {
         overflow: 'hidden',
       }}
     >
-      {/* Glow blob */}
-      <div style={{
-        position: 'absolute',
-        top: '20%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '800px',
-        height: '400px',
-        borderRadius: '50%',
-        background: 'radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
+      {/* Background glow orb */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '900px',
+          height: '450px',
+          borderRadius: '50%',
+          background: 'radial-gradient(ellipse, rgba(99,102,241,0.1) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div style={{
-          textAlign: 'center',
-          marginBottom: '72px',
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'all 0.8s ease',
-        }}>
-          <span style={{
-            display: 'inline-block',
-            background: 'rgba(168, 85, 247, 0.1)',
-            border: '1px solid rgba(168, 85, 247, 0.25)',
-            borderRadius: '100px',
-            padding: '4px 16px',
-            fontSize: '12px',
-            fontWeight: 700,
-            color: '#a855f7',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            fontFamily: 'Inter, sans-serif',
-            marginBottom: '20px',
-          }}>
-            Portfólio
-          </span>
-          <h2 style={{
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            fontWeight: 800,
-            fontFamily: 'Space Grotesk, sans-serif',
-            color: '#fff',
-            marginBottom: '16px',
-            lineHeight: 1.2,
-          }}>
-            Projetos de{' '}
-            <span style={{
-              background: 'linear-gradient(135deg, #a855f7, #6366f1)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              Sucesso
+        {/* Header with GSAP Reveal */}
+        <GsapReveal>
+          <div style={{ textAlign: 'center', marginBottom: '72px' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                background: 'rgba(168, 85, 247, 0.12)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                borderRadius: '100px',
+                padding: '6px 20px',
+                fontSize: '12px',
+                fontWeight: 700,
+                color: '#a855f7',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                fontFamily: 'Inter, sans-serif',
+                marginBottom: '20px',
+                boxShadow: '0 0 20px rgba(168,85,247,0.15)',
+              }}
+            >
+              Portfólio
             </span>
-          </h2>
-          <p style={{
-            fontSize: '17px',
-            color: 'rgba(255,255,255,0.5)',
-            maxWidth: '560px',
-            margin: '0 auto',
-            lineHeight: 1.7,
-            fontFamily: 'Inter, sans-serif',
-          }}>
-            Conheça alguns dos projetos que transformaram negócios
-          </p>
-        </div>
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+                fontWeight: 800,
+                fontFamily: 'Space Grotesk, sans-serif',
+                color: '#fff',
+                marginBottom: '16px',
+                lineHeight: 1.2,
+              }}
+            >
+              Projetos de{' '}
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #a855f7, #6366f1)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Sucesso
+              </span>
+            </h2>
+            <p
+              style={{
+                fontSize: '17px',
+                color: 'rgba(255,255,255,0.6)',
+                maxWidth: '560px',
+                margin: '0 auto',
+                lineHeight: 1.7,
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              Conheça alguns dos projetos que transformaram negócios
+            </p>
+          </div>
+        </GsapReveal>
 
-        {/* Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '24px',
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(30px)',
-            transition: 'all 0.9s ease 0.2s',
-          }}
-        >
-          {projects.map((project, index) => (
-            <PortfolioCard key={index} project={project} index={index} />
-          ))}
-        </div>
+        {/* Grid with GSAP Staggered Reveal */}
+        <GsapReveal stagger={0.1} duration={0.9}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+              gap: '28px',
+            }}
+          >
+            {projects.map((project, index) => (
+              <PortfolioCard key={index} project={project} />
+            ))}
+          </div>
+        </GsapReveal>
       </div>
     </section>
   );
